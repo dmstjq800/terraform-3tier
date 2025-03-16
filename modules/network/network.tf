@@ -10,7 +10,7 @@ resource "aws_vpc" "myVPC" {
   }
 }
 ################################
-# Public Subnet & Private Subnet 생성
+# Public Subnet 생성
 resource "aws_subnet" "myPublicSN" {
   count = length(var.public_sn_cidr)
   vpc_id = aws_vpc.myVPC.id
@@ -20,6 +20,8 @@ resource "aws_subnet" "myPublicSN" {
     Name = "Public-SN-${count.index+1}"
   }
 }
+##############################
+# Private Subnet 생성
 resource "aws_subnet" "myPrivateSN" {
   count = length(var.private_sn_cidr)
   vpc_id = aws_vpc.myVPC.id
@@ -61,7 +63,7 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 resource "aws_route_table_association" "public_route_table_association" {
-  count = length(var.private_sn_cidr)
+  count = length(var.public_sn_cidr)
   subnet_id = aws_subnet.myPublicSN[count.index].id 
   route_table_id = aws_route_table.public_route_table.id 
 }
